@@ -77,25 +77,23 @@ export default function SettingsPanel(props: SidebarProps) {
           </div>
         </Section>
         <Section title="Visualization" className="flex-grow">
-          <button
+          <label
             className="flex gap-1 items-center justify-center"
-            onClick={() => handleVisualization('falling-notes')}
           >
             <input
               type="radio"
               className="w-5"
               checked={visualization === 'falling-notes'}
-              readOnly
+              onClick={() => handleVisualization('falling-notes')}
             />
             <span className="block w-[120px] text-left">Falling notes</span>
-          </button>
-          <button
+          </label>
+          <label
             className="flex gap-1 items-center justify-center"
-            onClick={() => handleVisualization('sheet')}
           >
-            <input className="w-5" type="radio" checked={visualization === 'sheet'} readOnly />
+            <input onClick={() => handleVisualization('sheet')} className="w-5" type="radio" checked={visualization === 'sheet'} />
             <span className="block w-[120px] text-left"> Sheet hero (beta)</span>
-          </button>
+          </label>
         </Section>
         <div className="flex gap-4 flex-grow flex-col sm:flex-row">
           <Section title="Additional settings" className="flex-grow justify-center">
