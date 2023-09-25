@@ -64,6 +64,7 @@ export function getDefaultSongSettings(song?: Song): SongConfig {
     skipMissedNotes: false,
     visualization: 'falling-notes',
     tracks: {},
+    instrument: 'piano',
   }
   if (!song) {
     return songConfig

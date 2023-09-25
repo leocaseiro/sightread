@@ -79,6 +79,7 @@ export type Song = {
 
 export type Clef = 'bass' | 'treble'
 export type VisualizationMode = 'falling-notes' | 'sheet'
+export type Instrument = 'drums' | 'piano'
 export type Hand = 'both' | 'left' | 'right' | 'none'
 export type SongConfig = {
   left: boolean
@@ -92,6 +93,7 @@ export type SongConfig = {
   tracks: {
     [trackId: number]: TrackSetting
   }
+  instrument: Instrument
 }
 
 export type TrackSetting = {

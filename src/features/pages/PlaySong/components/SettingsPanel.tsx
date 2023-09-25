@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useCallback, useRef, useState } from 'react'
 import { Toggle } from '@/components'
-import { Song, SongConfig, VisualizationMode } from '@/types'
+import { Instrument, Song, SongConfig, VisualizationMode } from '@/types'
 import { AdjustInstruments } from '@/features/controls'
 import { getKeySignatures, KEY_SIGNATURE } from '@/features/theory'
 import { useEventListener, useWhenClickedOutside } from '@/hooks'
@@ -17,7 +17,8 @@ type SidebarProps = {
 }
 
 export default function SettingsPanel(props: SidebarProps) {
-  const { left, right, visualization, waiting, noteLetter, coloredNotes, keySignature } = props.config
+  // debugger;
+  const { left, right, visualization, waiting, noteLetter, coloredNotes, keySignature, instrument } = props.config
   const { onClose, onLoopToggled, isLooping } = props
   const [showTrackConfig, setShowTrackConfig] = useState(false)
 
@@ -41,7 +42,12 @@ export default function SettingsPanel(props: SidebarProps) {
   }
 
   const handleVisualization = (visualization: VisualizationMode) => {
-    props.onChange({ ...props.config, visualization })
+    const configInstrument: Instrument = visualization === "falling-notes" ? 'piano' : props.config.instrument;
+    props.onChange({ ...props.config, visualization, instrument: configInstrument });
+  }
+  const handleInstrument = (instrument: Instrument) => {
+    const configVisualization: VisualizationMode = instrument === 'drums' ? "sheet" :  props.config.visualization;
+    props.onChange({ ...props.config, visualization: configVisualization, instrument });
   }
   function handleWaiting(waiting: boolean) {
     props.onChange({ ...props.config, waiting })
@@ -76,25 +82,51 @@ export default function SettingsPanel(props: SidebarProps) {
             <Toggle checked={right} onChange={() => handleHand('right')} />
           </div>
         </Section>
-        <Section title="Visualization" className="flex-grow">
-          <label
-            className="flex gap-1 items-center justify-center"
-          >
-            <input
-              type="radio"
-              className="w-5"
-              checked={visualization === 'falling-notes'}
-              onClick={() => handleVisualization('falling-notes')}
-            />
-            <span className="block w-[120px] text-left">Falling notes</span>
-          </label>
-          <label
-            className="flex gap-1 items-center justify-center"
-          >
-            <input onClick={() => handleVisualization('sheet')} className="w-5" type="radio" checked={visualization === 'sheet'} />
-            <span className="block w-[120px] text-left"> Sheet hero (beta)</span>
-          </label>
-        </Section>
+        <div className="flex flex-col gap-4 justify-between flex-grow">
+          <Section title="Visualization" className="flex-grow">
+            <label
+              className="flex gap-1 items-center justify-center"
+            >
+              <input
+                type="radio"
+                className="w-5"
+                checked={visualization === 'falling-notes'}
+                onClick={() => handleVisualization('falling-notes')}
+              />
+              <span className="block w-[120px] text-left">Falling notes</span>
+            </label>
+            <label
+              className="flex gap-1 items-center justify-center"
+            >
+              <input onClick={() => handleVisualization('sheet')} className="w-5" type="radio" checked={visualization === 'sheet'} />
+              <span className="block w-[120px] text-left"> Sheet hero (beta)</span>
+            </label>
+          </Section>
+          <Section title="Instrument" className="flex-grow">
+              <label
+                className="flex gap-1 items-center justify-center"
+              >
+                <input
+                  type="radio"
+                  className="w-5"
+                  checked={instrument === 'drums'}
+                  onClick={() => handleInstrument('drums')}
+                />
+                <span className="block w-[120px] text-left">drums</span>
+              </label>
+              <label
+                className="flex gap-1 items-center justify-center"
+              >
+                <input
+                  type="radio"
+                  className="w-5"
+                  checked={instrument === 'piano'}
+                  onClick={() => handleInstrument('piano')}
+                />
+                <span className="block w-[120px] text-left">piano</span>
+              </label>
+          </Section>
+        </div>
         <div className="flex gap-4 flex-grow flex-col sm:flex-row">
           <Section title="Additional settings" className="flex-grow justify-center">
             <div className="flex justify-center">
