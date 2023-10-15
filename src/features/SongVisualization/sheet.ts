@@ -29,7 +29,7 @@ const STAFF_START_X = 100
 const STAFF_FIVE_LINES_HEIGHT = 80
 const PLAY_NOTES_LINE_OFFSET = STAFF_SPACE // offset above and below the staff lines
 
-function getViewport(state: Readonly<GivenState>): Viewport {
+export function getViewport(state: Readonly<GivenState>): Viewport {
   return {
     start: state.time * state.pps,
     end: state.time * state.pps + (state.windowWidth - STAFF_START_X),
@@ -40,7 +40,7 @@ type State = GivenState & {
   viewport: Viewport
 }
 
-function deriveState(state: GivenState) {
+export function deriveState(state: GivenState) {
   return { ...state, viewport: getViewport(state) }
 }
 

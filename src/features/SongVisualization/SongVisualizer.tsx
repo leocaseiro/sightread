@@ -66,6 +66,7 @@ function CanvasRenderer({
       canvasRect,
       selectedRange,
       game,
+      instrument: config.instrument,
     }
     render(state)
   }

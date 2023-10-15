@@ -56,6 +56,27 @@ const keyToNotes: { [sig in KEY_SIGNATURE]: string[] } = {
   Cb: ['C♮', 'D', 'D♮', 'E', 'E', 'F♮', 'G', 'G♮', 'A', 'A♮', 'B', 'C'],
 }
 
+type DrumNote = {
+  midiNumber: number
+  name: string
+  note: string
+  row: number
+}
+
+const drumKeyToNotes: DrumNote[] = [
+  { row: 0, note: 'AA', name: 'crash cymbal', midiNumber: 49 },
+  { row: 0, note: 'G♮', name: 'hi-hat close', midiNumber: 42 },
+  { row: 0, note: 'G', name: 'hi-hat opened', midiNumber: 46 },
+  { row: 0, note: 'F♮', name: 'ride bell cymbal', midiNumber: 53 },
+  { row: 0, note: 'F', name: 'ride cymbal', midiNumber: 51 },
+  { row: 0, note: 'E', name: 'high tom', midiNumber: 50 },
+  { row: 0, note: 'D', name: 'middle tom', midiNumber: 48 },
+  { row: 0, note: 'C', name: 'snare', midiNumber: 38 },
+  { row: 0, note: 'A', name: 'low tom', midiNumber: 47 },
+  { row: 0, note: 'f', name: 'bass drum', midiNumber: 35 },
+  { row: 28, note: 'd', name: 'hi-hat pedal', midiNumber: 44 }
+]
+
 let keyDetailsMap: KeyAlterationMap = getKeyDetailsMap()
 function getKeyDetailsMap(): KeyAlterationMap {
   const alterMap: KeyAlterationMap = {
@@ -146,6 +167,7 @@ const noteToKey: { [note: number]: string } = {}
 })()
 
 export function getNote(key: string): number {
+  // debugger;
   return keyToNote[key]
 }
 

@@ -65,6 +65,7 @@ export function drawLedgerLines(
   clef: Clef,
   keySignature?: KEY_SIGNATURE,
 ) {
+  debugger;
   let rowOffset = getRowOffset(midiNote, clef, keySignature)
   const direction = rowOffset < 0 ? -1 : 1
   // If note is odd, push it to even since only even rows have lines.
@@ -211,6 +212,7 @@ function getRowOffset(midiNote: number, clef: Clef, keySignature?: KEY_SIGNATURE
 
 // There are 52 white keys. 7 (sortof) notes per octave (technically octaves go from C-C...so its 8).
 function getRow(midiNote: number, keySignature?: KEY_SIGNATURE): number {
+  // debugger;
   let key = getKey(midiNote, keySignature)
   let octave = getOctave(midiNote)
   let step = key[0]

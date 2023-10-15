@@ -23,6 +23,7 @@ export type GivenState = {
   // TODO: snap to measures
   selectedRange?: { start: number; end: number }
   game: boolean
+  instrument: 'piano' | 'drums'
 }
 
 export function render(state: Readonly<GivenState>) {
