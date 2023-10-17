@@ -28,6 +28,10 @@ const CLEFS = {
     bottomRow: getRow(getNote('G2')),
     topRow: getRow(getNote('A3')),
   },
+  percussion: {
+    bottomRow: getRow(getNote('E4')),
+    topRow: getRow(getNote('F5')),
+  }
 }
 
 export function drawStaffConnectingLine(
@@ -135,6 +139,7 @@ export function drawKeySignature(
   keySignature: KEY_SIGNATURE,
   staff: Clef,
 ) {
+  // debugger;
   ctx.save()
   const type = getKeyDetails(keySignature).type
   const symbol = type === 'flat' ? glyphs.accidentalFlat : glyphs.accidentalSharp
@@ -150,6 +155,7 @@ export function drawKeySignature(
 }
 
 function getKeySignatureNotes(keySignature: KEY_SIGNATURE, staff: Clef) {
+  // debugger
   return getKeyDetails(keySignature).notes.map((note) => {
     let octave = staff === 'treble' ? 5 : 3
     if (note === 'A' || note === 'B') {
@@ -211,10 +217,16 @@ function getRowOffset(midiNote: number, clef: Clef, keySignature?: KEY_SIGNATURE
 
 // There are 52 white keys. 7 (sortof) notes per octave (technically octaves go from C-C...so its 8).
 function getRow(midiNote: number, keySignature?: KEY_SIGNATURE): number {
+  // debugger;
   let key = getKey(midiNote, keySignature)
   let octave = getOctave(midiNote)
   let step = key[0]
   return octave * 7 + STEP_NUM[step]
+}
+
+export function drawPercussionClef(ctx: CanvasRenderingContext2D, x: number, staffTopY: number) {
+  const y = staffTopY + getOffset(getNote('B4'), 'percussion')
+  drawSymbol(ctx, glyphs.unpitchedPercussionClef1, x, y, STAFF_FIVE_LINES_HEIGHT)
 }
 
 export function drawGClef(ctx: CanvasRenderingContext2D, x: number, staffTopY: number) {

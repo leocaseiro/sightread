@@ -38,6 +38,7 @@
   "scripts": {
     "start": "next start",
     "dev": "next dev",
+    "dev:debug": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "lint": "next lint",
     "format": "prettier --write src/**/*.ts*",

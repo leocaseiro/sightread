@@ -3,6 +3,7 @@ import { CanvasItem, getItemsInView, Viewport } from './utils'
 import {
   drawCurlyBrace,
   drawFClef,
+  drawPercussionClef,
   drawGClef,
   drawKeySignature,
   drawPlayNotesLine,
@@ -40,7 +41,7 @@ type State = GivenState & {
   viewport: Viewport
 }
 
-function deriveState(state: GivenState) {
+export function deriveState(state: GivenState) {
   return { ...state, viewport: getViewport(state) }
 }
 
@@ -48,6 +49,7 @@ function deriveState(state: GivenState) {
 // - can use offdom canvas (not OffscreenCanvas API) for background since its repainting over and over.
 // - can also treat it all as one giant image that gets partially drawn each frame.
 export function renderSheetVis(givenState: GivenState): void {
+  // debugger;
   const state = deriveState(givenState)
   state.ctx.clearRect(0, 0, state.windowWidth, state.height)
   drawStaticsUnderlay(state)
@@ -74,22 +76,52 @@ function getSheetItemsInView(state: State): CanvasItem[] {
   return getItemsInView(state, startPred, endPred)
 }
 
-function drawStaticsOverlay(state: State) {
+function drawStaticsOverlayDrums(state: State) {
   const { ctx, keySignature } = state
   const overlayEnd = getPlayNotesLineX(state) - STAFF_SPACE * 2
   ctx.clearRect(0, 0, overlayEnd, state.height)
   ctx.fillStyle = 'black'
   ctx.strokeStyle = 'black'
 
-  const curlyBraceSize = STAFF_FIVE_LINES_HEIGHT * 2 + 100
-  const curlyBraceY = state.height / 2 + curlyBraceSize / 2
-  drawCurlyBrace(state.ctx, STAFF_START_X - 25, curlyBraceY, curlyBraceSize)
+  const staffHeight = STAFF_FIVE_LINES_HEIGHT
+  const trebleTopY = getTrebleStaffTopY(state)
+  const bassTopY = getBassStaffTopY(state)
+  drawStaffLines(state.ctx, STAFF_START_X, trebleTopY, overlayEnd)
+  drawStaffConnectingLine(state.ctx, STAFF_START_X, trebleTopY - 1, bassTopY + staffHeight + 1)
+
+  const playLineTop = trebleTopY - PLAY_NOTES_LINE_OFFSET
+  const playLineBottom = bassTopY + staffHeight + PLAY_NOTES_LINE_OFFSET
+  drawPlayNotesLine(ctx, getPlayNotesLineX(state) - 2, playLineTop, playLineBottom)
+
+  drawPercussionClef(ctx, getClefX(), trebleTopY)
+  drawKeySignature(ctx, getKeySignatureX(), trebleTopY, keySignature, 'percussion')
+
+  if (state.timeSignature) {
+    const x = getTimeSignatureX(state)
+    drawTimeSignature(ctx, x, trebleTopY, state.timeSignature)
+  }
+}
+
+function drawStaticsOverlay(state: State) {
+  return drawStaticsOverlayDrums(state);
+}
+
+function drawStaticsOverlayPiano(state: State) {
+  const { ctx, keySignature } = state
+  const overlayEnd = getPlayNotesLineX(state) - STAFF_SPACE * 2
+  ctx.clearRect(0, 0, overlayEnd, state.height)
+  ctx.fillStyle = 'black'
+  ctx.strokeStyle = 'black'
+
+  // const curlyBraceSize = STAFF_FIVE_LINES_HEIGHT * 2 + 100
+  // const curlyBraceY = state.height / 2 + curlyBraceSize / 2
+  // drawCurlyBrace(state.ctx, STAFF_START_X - 25, curlyBraceY, curlyBraceSize)
 
   const staffHeight = STAFF_FIVE_LINES_HEIGHT
   const trebleTopY = getTrebleStaffTopY(state)
   const bassTopY = getBassStaffTopY(state)
   drawStaffLines(state.ctx, STAFF_START_X, trebleTopY, overlayEnd)
-  drawStaffLines(state.ctx, STAFF_START_X, bassTopY, overlayEnd)
+  // drawStaffLines(state.ctx, STAFF_START_X, bassTopY, overlayEnd)
   drawStaffConnectingLine(state.ctx, STAFF_START_X, trebleTopY - 1, bassTopY + staffHeight + 1)
 
   const playLineTop = trebleTopY - PLAY_NOTES_LINE_OFFSET
@@ -97,14 +129,14 @@ function drawStaticsOverlay(state: State) {
   drawPlayNotesLine(ctx, getPlayNotesLineX(state) - 2, playLineTop, playLineBottom)
 
   drawGClef(ctx, getClefX(), trebleTopY)
-  drawFClef(ctx, getClefX(), bassTopY)
+  // drawFClef(ctx, getClefX(), bassTopY)
   drawKeySignature(ctx, getKeySignatureX(), trebleTopY, keySignature, 'treble')
-  drawKeySignature(ctx, getKeySignatureX(), bassTopY, keySignature, 'bass')
+  // drawKeySignature(ctx, getKeySignatureX(), bassTopY, keySignature, 'bass')
 
   if (state.timeSignature) {
     const x = getTimeSignatureX(state)
     drawTimeSignature(ctx, x, trebleTopY, state.timeSignature)
-    drawTimeSignature(ctx, x, bassTopY, state.timeSignature)
+    // drawTimeSignature(ctx, x, bassTopY, state.timeSignature)
   }
 }
 
@@ -114,9 +146,9 @@ function drawStaticsUnderlay(state: State) {
   ctx.strokeStyle = 'black'
 
   const trebleTopY = getTrebleStaffTopY(state)
-  const bassTopY = getBassStaffTopY(state)
+  // const bassTopY = getBassStaffTopY(state)
   drawStaffLines(state.ctx, STAFF_START_X, trebleTopY, state.windowWidth)
-  drawStaffLines(state.ctx, STAFF_START_X, bassTopY, state.windowWidth)
+  // drawStaffLines(state.ctx, STAFF_START_X, bassTopY, state.windowWidth)
 }
 
 function getTrebleStaffTopY(state: State) {
@@ -212,7 +244,8 @@ function renderLedgerLines(state: State, note: SongNote): void {
   )
 }
 
-function renderSheetNote(state: State, note: SongNote): void {
+export function renderSheetNote(state: State, note: SongNote): void {
+  debugger;
   const { ctx, pps, keySignature } = state
   ctx.save()
   const length = Math.round(pps * note.duration)

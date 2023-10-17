@@ -6,6 +6,7 @@ const glyphs = {
 
   fClef: '\uE062',
   gClef: '\uE050',
+  unpitchedPercussionClef1: '\uE069',
   brace: '\uE000',
   timeSig0: '\uE080',
   timeSig1: '\uE081',

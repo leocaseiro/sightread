@@ -29,6 +29,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 // Page should operate even if/when midishare is down.
 async function getMidishareManifest() {
+  // debugger;topRow
   try {
     return (await fetch('https://midishare.dev/api/midis')).json()
   } catch (err: any) {

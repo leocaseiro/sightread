@@ -77,7 +77,7 @@ export type Song = {
   backing?: HTMLAudioElement
 }
 
-export type Clef = 'bass' | 'treble'
+export type Clef = 'bass' | 'treble' | 'percussion'
 export type VisualizationMode = 'falling-notes' | 'sheet'
 export type Hand = 'both' | 'left' | 'right' | 'none'
 export type SongConfig = {
