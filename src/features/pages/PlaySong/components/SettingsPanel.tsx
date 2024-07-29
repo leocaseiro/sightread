@@ -91,14 +91,14 @@ export default function SettingsPanel(props: SidebarProps) {
                 type="radio"
                 className="w-5"
                 checked={visualization === 'falling-notes'}
-                onClick={() => handleVisualization('falling-notes')}
+                onChange={() => handleVisualization('falling-notes')}
               />
               <span className="block w-[120px] text-left">Falling notes</span>
             </label>
             <label
               className="flex gap-1 items-center justify-center"
             >
-              <input onClick={() => handleVisualization('sheet')} className="w-5" type="radio" checked={visualization === 'sheet'} />
+              <input onChange={() => handleVisualization('sheet')} className="w-5" type="radio" checked={visualization === 'sheet'} />
               <span className="block w-[120px] text-left"> Sheet hero (beta)</span>
             </label>
           </Section>
@@ -110,7 +110,7 @@ export default function SettingsPanel(props: SidebarProps) {
                   type="radio"
                   className="w-5"
                   checked={instrument === 'drums'}
-                  onClick={() => handleInstrument('drums')}
+                  onChange={() => handleInstrument('drums')}
                 />
                 <span className="block w-[120px] text-left">drums</span>
               </label>
@@ -121,7 +121,7 @@ export default function SettingsPanel(props: SidebarProps) {
                   type="radio"
                   className="w-5"
                   checked={instrument === 'piano'}
-                  onClick={() => handleInstrument('piano')}
+                  onChange={() => handleInstrument('piano')}
                 />
                 <span className="block w-[120px] text-left">piano</span>
               </label>

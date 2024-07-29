@@ -65,7 +65,6 @@ export function drawLedgerLines(
   clef: Clef,
   keySignature?: KEY_SIGNATURE,
 ) {
-  debugger;
   let rowOffset = getRowOffset(midiNote, clef, keySignature)
   const direction = rowOffset < 0 ? -1 : 1
   // If note is odd, push it to even since only even rows have lines.
@@ -187,8 +186,8 @@ export function drawSymbol(
   } else {
     ctx.font = MUSIC_FONT
   }
-  ctx.fillStyle = color 
-  ctx.strokeStyle = color 
+  ctx.fillStyle = color
+  ctx.strokeStyle = color
   ctx.fillText(symbol, x, y)
   ctx.restore()
 }
