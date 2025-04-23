@@ -15,7 +15,7 @@ export const drumMap: DrumNoteMapping[] = [
     { midi: 46, name: 'Open Hi-Hat', acronym: 'OH', staffLine: 6, notehead: 'circle-cross' },
     { midi: 44, name: 'Pedal Hi-Hat', acronym: 'PH', staffLine: -4, notehead: 'cross' },
     { midi: 36, name: 'Bass Drum 1', acronym: 'BD', staffLine: -2, notehead: 'normal' },
-    { midi: 35, name: 'Acoustic Bass Drum', acronym: 'BD', staffLine: -2, notehead: 'normal' },
+    { midi: 35, name: 'Acoustic Bass Drum', acronym: 'BD', staffLine: -3, notehead: 'normal' },
     { midi: 51, name: 'Ride Cymbal 1', acronym: 'RD', staffLine: 5, notehead: 'cross' },
     { midi: 59, name: 'Ride Cymbal 2', acronym: 'RD', staffLine: 5, notehead: 'cross' },
     { midi: 53, name: 'Ride Bell', acronym: 'RDB', staffLine: 5, notehead: 'triangle' },
@@ -24,13 +24,15 @@ export const drumMap: DrumNoteMapping[] = [
     { midi: 55, name: 'Splash Cymbal', acronym: 'SP', staffLine: 8, notehead: 'diamond', extraLine: 'bottom' },
     { midi: 52, name: 'Chinese Cymbal', acronym: 'CH', staffLine: 8, notehead: 'circle-cross', extraLine: 'bottom' },
     
-    { midi: 50, name: 'High Tom', acronym: 'T1', staffLine: 4, notehead: 'normal' },
+    { midi: 50, name: 'Very High Tom', acronym: 'T1', staffLine: 5, notehead: 'normal' },
+    { midi: 48, name: 'High Tom', acronym: 'T1', staffLine: 3, notehead: 'normal' },
     
-    { midi: 48, name: 'Hi Mid Tom', acronym: 'T2', staffLine: 3, notehead: 'normal' },
-    { midi: 47, name: 'Low-Mid Tom', acronym: 'T2', staffLine: 3, notehead: 'normal' },
+    { midi: 47, name: 'Mid Tom', acronym: 'T2', staffLine: 1, notehead: 'normal' },
 
+    { midi: 45, name: 'Low Tom', acronym: 'T2', staffLine: 0, notehead: 'normal' },
     { midi: 41, name: 'Low Floor Tom', acronym: 'T3', staffLine: 0, notehead: 'normal' },
-    { midi: 45, name: 'Low Tom', acronym: 'T3', staffLine: 0, notehead: 'normal' },
+    
+    { midi: 43, name: 'Very Low Tom', acronym: 'T3', staffLine: -1, notehead: 'normal' },
 
     // { midi: 60, name: 'Hi Bongo', acronym: 'BO', staffLine: 4, notehead: 'normal' },
     // { midi: 61, name: 'Low Bongo', acronym: 'BO', staffLine: 4, notehead: 'normal' },
@@ -40,7 +42,6 @@ export const drumMap: DrumNoteMapping[] = [
     // { midi: 64, name: 'Low Conga', acronym: 'CO', staffLine: 4, notehead: 'normal' },
     // { midi: 65, name: 'High Timbale', acronym: 'TB', staffLine: 4, notehead: 'normal' },
     // { midi: 66, name: 'Low Timbale', acronym: 'TB', staffLine: 4, notehead: 'normal' },
-    // { midi: 43, name: 'High Floor Tom', acronym: 'T3', staffLine: 2, notehead: 'normal' },
     // { midi: 67, name: 'High Agogo', acronym: 'AG', staffLine: 4, notehead: 'normal' },
     // { midi: 68, name: 'Low Agogo', acronym: 'AG', staffLine: 4, notehead: 'normal' },
     // { midi: 69, name: 'Cabasa', acronym: 'CB', staffLine: 4, notehead: 'normal' },
@@ -151,7 +152,7 @@ export function drawDrumStaffLines(
 //   }
 // }
 
-export function drawDrumNote(ctx: CanvasRenderingContext2D, note: Note) {
+function drawDrumNote(ctx: CanvasRenderingContext2D, note: Note) {
   const staffTop = 40;
   const staffSpacing = 10;
   const staffLines = 5;

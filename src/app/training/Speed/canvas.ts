@@ -10,8 +10,6 @@ import {
   getNoteY,
   PLAY_NOTES_WIDTH,
   STAFF_SPACE,
-  drawDrumStaff,
-  drawDrumNotes,
 } from '@/features/drawing'
 import midiState from '@/features/midi'
 import { getKey, glyphs } from '@/features/theory'

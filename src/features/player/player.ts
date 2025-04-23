@@ -545,6 +545,7 @@ export class Player {
 }
 
 export function isHitNote(player: Player, note?: SongNote) {
+  // console.log('isHitNote', note)
   if (!note) return false
   return player.hitNotes.has(note)
 }
