@@ -56,15 +56,10 @@ export function renderDrumSheetVis(givenState: GivenState): void {
     if (item.type === 'measure') {
       continue
     }
+    renderDrumSheetNote(state, item)
   }
-  for (const item of items) {
-    if (item.type === 'measure') {
-      continue
-    }
-    renderSheetNote(state, item)
-  }
-  drawStaticsOverlay(state)
-  renderMidiPressedKeys(state, items)
+  drawDrumStaticsOverlay(state)
+  renderDrumMidiPressedKeys(state, items)
 }
 
 function getSheetItemsInView(state: State): CanvasItem[] {
@@ -73,8 +68,8 @@ function getSheetItemsInView(state: State): CanvasItem[] {
   return getItemsInView(state, startPred, endPred)
 }
 
-function drawStaticsOverlay(state: State) {
-  const { ctx, keySignature } = state
+function drawDrumStaticsOverlay(state: State) {
+  const { ctx } = state
   const overlayEnd = getPlayNotesLineX(state) - STAFF_SPACE * 2
   ctx.clearRect(0, 0, overlayEnd, state.height)
   ctx.fillStyle = 'black'
@@ -176,16 +171,15 @@ function getLearnSongColorPrefix(
   return getNoteColor(coloredNotes, step)
 }
 
-function renderSheetNote(state: State, note: SongNote): void {
+function renderDrumSheetNote(state: State, note: SongNote): void {
   const { ctx, pps, keySignature } = state
   ctx.save()
   const length = Math.round(pps * note.duration)
   const posX = getItemStartEnd(state, note).start
-  const staff = state.hands?.[note.track].hand === 'right' ? 'treble' : 'bass'
-  const staffTopY = staff === 'treble' ? getDrumStaffTopY(state) : getDrumStaffTopY(state)
+  const staffTopY = getDrumStaffTopY(state)
   const playNotesLineX = getPlayNotesLineX(state)
   let canvasX = posX + playNotesLineX + PLAY_NOTES_WIDTH / 2
-  let canvasY = getDrumNoteY(note.midiNote, staff, staffTopY, keySignature)
+  let canvasY = getDrumNoteY(note.midiNote, 'drum', staffTopY)
 
   const key = getKey(note.midiNote, state.keySignature)
   const prefix = state.game
@@ -217,8 +211,8 @@ function renderSheetNote(state: State, note: SongNote): void {
   if (state.drawNotes) {
     ctx.font = `9px ${TEXT_FONT}`
     ctx.fillStyle = 'white'
-    ctx.fillText(String(getDrumProp(note.midiNote, 'acronym')), canvasX - 3, canvasY + 3)
-    // ctx.fillText(String(getDrumProp(note.midiNote, 'midi')), canvasX - 3, canvasY + 3)
+    // ctx.fillText(String(getDrumProp(note.midiNote, 'acronym')), canvasX - 3, canvasY + 3)
+    ctx.fillText(String(getDrumProp(note.midiNote, 'midi')), canvasX - 3, canvasY + 3)
   }
   ctx.restore()
 }
@@ -230,24 +224,12 @@ export function getItemStartEnd(state: State, item: CanvasItem): { start: number
   return { start, end }
 }
 
-function renderMidiPressedKeys(state: State, inRange: (SongNote | SongMeasure)[]): void {
+function renderDrumMidiPressedKeys(state: State, inRange: (SongNote | SongMeasure)[]): void {
   const { ctx } = state
   const pressed = midiState.getPressedNotes()
   for (let note of pressed.keys()) {
-    let staff: Clef = note < getNote('C4') ? 'bass' : 'treble'
-    const inRangeNote = inRange.find((n) => n.type === 'note' && n.midiNote === +note) as
-      | SongNote
-      | undefined
-    if (inRangeNote) {
-      staff = state.hands?.[inRangeNote.track].hand === 'right' ? 'treble' : 'bass'
-    }
-
-    if (state.game && isHitNote(state.player, inRangeNote)) {
-      return
-    }
-
     const staffTopY = getDrumStaffTopY(state)
-    const canvasY = getDrumNoteY(note, staff, staffTopY)
+    const canvasY = getDrumNoteY(note, 'drum', staffTopY)
     let canvasX = getPlayNotesLineX(state) - 2
     const key = getKey(note)
     drawMusicNote(
@@ -260,7 +242,7 @@ function renderMidiPressedKeys(state: State, inRange: (SongNote | SongMeasure)[]
     if (state.drawNotes) {
       ctx.font = `9px ${TEXT_FONT}`
       ctx.fillStyle = 'white'
-      ctx.fillText(key[0], canvasX, canvasY + 3)
+      ctx.fillText(String(getDrumProp(note, 'acronym')), canvasX - 3, canvasY + 3)
     }
   }
 }
