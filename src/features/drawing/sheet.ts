@@ -217,6 +217,7 @@ function getRow(midiNote: number, keySignature?: KEY_SIGNATURE): number {
   return octave * 7 + STEP_NUM[step]
 }
 
+
 export function drawGClef(ctx: CanvasRenderingContext2D, x: number, staffTopY: number) {
   const y = staffTopY + getOffset(getNote('G4'), 'treble')
   drawSymbol(ctx, glyphs.gClef, x, y, STAFF_FIVE_LINES_HEIGHT)

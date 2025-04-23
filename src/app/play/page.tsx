@@ -182,7 +182,7 @@ function PlaySongLegacy() {
           className={clsx(
             'fixed -z-10 h-[100vh] w-screen',
             'h-[100dvh]!',
-            songConfig.visualization === 'sheet' ? 'bg-white' : 'bg-[#2e2e2e]',
+            songConfig.visualization === 'falling-notes' ? 'bg-[#2e2e2e]' : 'bg-white',
           )}
         >
           <SongVisualizer
@@ -192,7 +192,7 @@ function PlaySongLegacy() {
             handSettings={getHandSettings(songConfig)}
             selectedRange={selectedRange}
             getTime={() => player.getTime()}
-            enableTouchscroll={songConfig.visualization === 'falling-notes'}
+            enableTouchscroll={songConfig.visualization !== 'falling-notes'}
           />
         </div>
       </div>

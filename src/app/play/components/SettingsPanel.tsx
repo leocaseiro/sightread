@@ -97,6 +97,13 @@ export default function SettingsPanel(props: SidebarProps) {
             <input className="w-5" type="radio" checked={visualization === 'sheet'} readOnly />
             <span className="block w-[120px] text-left"> Sheet hero (beta)</span>
           </button>
+          <button
+            className="flex items-center justify-center gap-1"
+            onClick={() => handleVisualization('drum-sheet')}
+          >
+            <input className="w-5" type="radio" checked={visualization === 'drum-sheet'} readOnly />
+            <span className="block w-[120px] text-left"> Drum hero</span>
+          </button>
         </Section>
         <div className="flex grow flex-col gap-4 sm:flex-row">
           <Section title="Additional settings" className="grow justify-center">

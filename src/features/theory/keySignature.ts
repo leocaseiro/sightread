@@ -99,6 +99,24 @@ const midiToSigMap: { [num: number]: KEY_SIGNATURE } = {
   '6': 'F#',
   '7': 'C#',
 }
+
+const drumMidiToSigMap: { [num: number]: KEY_SIGNATURE } = {
+  '-7': 'Cb',
+  '-6': 'Gb',
+  '-5': 'Db',
+  '-4': 'Ab',
+  '-3': 'Eb',
+  '-2': 'Bb',
+  '-1': 'F',
+  '0': 'C',
+  '1': 'G',
+  '2': 'D',
+  '3': 'A',
+  '4': 'E',
+  '5': 'B',
+  '6': 'F#',
+  '7': 'C#',
+}
 const keySigToFifth = Object.fromEntries(Object.entries(midiToSigMap).map(([k, v]) => [v, k]))
 
 export function getKeyDetails(key: KEY_SIGNATURE): KeyDetails {
@@ -107,6 +125,10 @@ export function getKeyDetails(key: KEY_SIGNATURE): KeyDetails {
 
 export function getKeySignatureFromMidi(key: number, scale: number): KEY_SIGNATURE {
   return midiToSigMap[key]
+}
+
+export function getDrumKeySignatureFromMidi(key: number, scale: number): KEY_SIGNATURE {
+  return drumMidiToSigMap[key]
 }
 
 function circleOfFifths(fifth: number) {

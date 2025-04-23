@@ -77,8 +77,8 @@ export type Song = {
   backing?: HTMLAudioElement
 }
 
-export type Clef = 'bass' | 'treble'
-export type VisualizationMode = 'falling-notes' | 'sheet'
+export type Clef = 'bass' | 'treble' | 'drum'
+export type VisualizationMode = 'falling-notes' | 'sheet' | 'drum-sheet'
 export type Hand = 'both' | 'left' | 'right' | 'none'
 export type SongConfig = {
   left: boolean
@@ -113,3 +113,14 @@ export type HandSettings = {
     hand: Hand | 'none'
   }
 }
+
+
+export interface DrumNoteMapping {
+  midi: number;
+  name: string;
+  acronym: string;
+  staffLine: number; // e.g., 0 = bottom line, 4 = top line, can use spaces too
+  notehead: 'normal' | 'cross' | 'diamond' | 'circle-cross' | 'triangle';
+  extraLine?: 'top' | 'bottom' | 'middle';
+}
+

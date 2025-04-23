@@ -4,12 +4,13 @@ import { CanvasItem } from './utils'
 import { renderFallingVis } from './falling-notes'
 import { renderSheetVis } from './sheet'
 import { Player } from '../player'
+import { renderDrumSheetVis } from './drumsheet'
 
 export type GivenState = {
   time: number
   drawNotes: boolean
   coloredNotes: boolean
-  visualization: 'falling-notes' | 'sheet'
+  visualization: 'falling-notes' | 'sheet' | 'drum-sheet'
   windowWidth: number
   height: number
   pps: number // pixels per second
@@ -30,6 +31,8 @@ export type GivenState = {
 export function render(state: Readonly<GivenState>) {
   if (state.visualization === 'falling-notes') {
     renderFallingVis(state)
+  } else if (state.visualization === 'drum-sheet') {
+    renderDrumSheetVis(state)
   } else {
     renderSheetVis(state)
   }
