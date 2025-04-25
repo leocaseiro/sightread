@@ -62,16 +62,25 @@ export function renderDrumSheetVis(givenState: GivenState): void {
   renderDrumMidiPressedKeys(state, items)
 }
 
+// function getSheetItemsInView(state: State): CanvasItem[] {
+//   const delaySeconds = 10; // change this to however many seconds you want
+//   const startPred = (item: CanvasItem) => getItemStartEnd(state, item).end >= -state.pps * delaySeconds;
+//   const endPred = (item: CanvasItem) => getItemStartEnd(state, item).start > state.windowWidth;
+//   return getItemsInView(state, startPred, endPred);
+// }
+
 function getSheetItemsInView(state: State): CanvasItem[] {
-  const startPred = (item: CanvasItem) => getItemStartEnd(state, item).end >= 0
+  // const startPred = (item: CanvasItem) => getItemStartEnd(state, item).end >= 0
+  const startPred = (item: CanvasItem) => getItemStartEnd(state, item).end >= -state.pps * 2
   const endPred = (item: CanvasItem) => getItemStartEnd(state, item).start > state.windowWidth
   return getItemsInView(state, startPred, endPred)
 }
 
 function drawDrumStaticsOverlay(state: State) {
   const { ctx } = state
-  const overlayEnd = getPlayNotesLineX(state) - STAFF_SPACE * 2
-  ctx.clearRect(0, 0, overlayEnd, state.height)
+  const overlayEnd = getPlayNotesLineX(state) - STAFF_SPACE * 2 - 100
+  
+  // ctx.clearRect(0, 0, overlayEnd, state.height)
   ctx.fillStyle = 'black'
   ctx.strokeStyle = 'black'
 
@@ -120,7 +129,7 @@ function getTimeSignatureX(state: State) {
 }
 
 function getPlayNotesLineX(state: State) {
-  return getTimeSignatureX(state) + STAFF_SPACE * 4
+  return getTimeSignatureX(state) + STAFF_SPACE * 4 + 100
 }
 
 const colorMap = {
@@ -130,15 +139,20 @@ const colorMap = {
   black: '0,0,0',
 }
 
-const coloredNotesMap: { [step: string]: string } = {
-  A: '12,23,141',
-  B: '75,32,139',
-  C: '217,59,38',
-  D: '238,151,56',
-  E: '253,229,65',
-  F: '62,139,38',
-  G: '139,210,250',
-}
+const coloredNotesMap: { [acronym: string]: string } = {
+  HH:  '0,112,255',   // Vivid Blue
+  OH:  '255,140,0',   // Orange
+  PH:  '128,0,255',   // Purple
+  BD:  '255,215,0',   // Gold/Yellow
+  CR:  '0,255,255',   // Cyan
+  SP:  '255,0,255',   // Magenta
+  CH:  '0,191,255',   // Deep Sky Blue
+  T1:  '255,105,180', // Hot Pink
+  T2:  '0,0,205',     // Medium Blue
+  T3:  '255,69,0',    // Orange Red
+  RD:  '75,0,130',    // Indigo
+  RDB: '255,20,147',  // Deep Pink
+};
 
 function getGameColorPrefix(state: State, note: SongNote, canvasX: number) {
   const playNotesLineX = getPlayNotesLineX(state)
@@ -168,13 +182,14 @@ function getLearnSongColorPrefix(
     return colorMap.primary
   }
 
-  return getNoteColor(coloredNotes, step)
+  return getNoteColor(coloredNotes, getDrumProp<string>(note.midiNote, 'acronym') ?? '')
 }
 
 function renderDrumSheetNote(state: State, note: SongNote): void {
   const { ctx, pps, keySignature } = state
   ctx.save()
   const length = Math.round(pps * note.duration)
+  // const length = 20
   const posX = getItemStartEnd(state, note).start
   const staffTopY = getDrumStaffTopY(state)
   const playNotesLineX = getPlayNotesLineX(state)
@@ -182,6 +197,7 @@ function renderDrumSheetNote(state: State, note: SongNote): void {
   let canvasY = getDrumNoteY(note.midiNote, 'drum', staffTopY)
 
   const key = getKey(note.midiNote, state.keySignature)
+  // const prefix = getLearnSongColorPrefix(state, note, canvasX, state.coloredNotes, key[0])
   const prefix = state.game
     ? getGameColorPrefix(state, note, canvasX)
     : getLearnSongColorPrefix(state, note, canvasX, state.coloredNotes, key[0])
@@ -202,7 +218,7 @@ function renderDrumSheetNote(state: State, note: SongNote): void {
   ctx.globalCompositeOperation = 'source-over'
 
   // Return after drawing the tail for the notes that have already crossed.
-  if (canvasX < playNotesLineX - STAFF_SPACE * 2) {
+  if (canvasX < playNotesLineX - STAFF_SPACE * 6) {
     ctx.restore()
     return
   }
@@ -211,8 +227,8 @@ function renderDrumSheetNote(state: State, note: SongNote): void {
   if (state.drawNotes) {
     ctx.font = `9px ${TEXT_FONT}`
     ctx.fillStyle = 'white'
-    // ctx.fillText(String(getDrumProp(note.midiNote, 'acronym')), canvasX - 3, canvasY + 3)
-    ctx.fillText(String(getDrumProp(note.midiNote, 'midi')), canvasX - 3, canvasY + 3)
+    ctx.fillText(String(getDrumProp(note.midiNote, 'acronym')), canvasX - 3, canvasY + 3)
+    // ctx.fillText(String(getDrumProp(note.midiNote, 'midi')), canvasX - 3, canvasY + 3)
   }
   ctx.restore()
 }
@@ -248,12 +264,12 @@ function renderDrumMidiPressedKeys(state: State, inRange: (SongNote | SongMeasur
 }
 
 function fadeColorToWhite(color: string, gradient: any) {
-  gradient.addColorStop(0, `rgba(${color},0)`)
-  gradient.addColorStop(0.5, `rgba(${color},0.1)`)
-  gradient.addColorStop(0.8, `rgba(${color},0.3`)
+  gradient.addColorStop(0, `rgba(${color},1)`)
+  gradient.addColorStop(0.5, `rgba(${color},.5)`)
+  gradient.addColorStop(0.8, `rgba(${color},.3`)
   gradient.addColorStop(1, `rgba(${color},1)`)
 }
 
-function getNoteColor(coloredNotes: boolean, step: string): string {
-  return coloredNotes ? coloredNotesMap[step] : colorMap.black
+function getNoteColor(coloredNotes: boolean, acronym: string): string {
+  return coloredNotes ? coloredNotesMap[acronym] : colorMap.black
 }
