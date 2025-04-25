@@ -22,6 +22,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import { SettingsPanel, TopBar } from './components'
 import { MidiModal } from './components/MidiModal'
+import FloatBar from './components/FloatBar'
+import CountdownOverlay from './components/CountdownOverlay'
+import { useRef } from 'react'
 
 // This function exists as hack to stop the CSR deopt warning.
 // To do this the "next app router" way would require boxing up the bits
@@ -30,6 +33,7 @@ import { MidiModal } from './components/MidiModal'
 function PlaySongLegacy() {
   const router = useRouter()
   const player = usePlayer()
+  const bpm = useAtomValue(player.getBpm())
   const searchParams = useSearchParams()
   const { source, id, recording }: { source: SongSource; id: string; recording?: string } =
     Object.fromEntries(searchParams) as any
@@ -46,6 +50,9 @@ function PlaySongLegacy() {
     [range],
   )
   const isLooping = !!range
+
+  const [countdown, setCountdown] = useState(0)
+const countdownTimeout = useRef<NodeJS.Timeout | null>(null)
 
   const [songConfig, setSongConfig] = useSongSettings(id)
   const isRecording = !!recording
@@ -108,6 +115,12 @@ function PlaySongLegacy() {
     }
   }, [synth, song, songConfig])
 
+  useEffect(() => {
+    return () => {
+      if (countdownTimeout.current) clearTimeout(countdownTimeout.current)
+    }
+  }, [])
+
   // If source or id is messed up, redirect to the homepage
   if (!source || !id) {
     router.replace('/')
@@ -127,6 +140,76 @@ function PlaySongLegacy() {
     }
   }
 
+  function playBeep() {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+  
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 880; // You can adjust frequency for different beep sounds
+    gain.gain.value = 0.2; // Volume
+  
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+  
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.1); // 100ms beep
+  
+    oscillator.onended = () => ctx.close();
+  }
+
+  function handlePlayWithCountdown() {
+    const interval = 60000 / bpm;
+    const countdownBeats = 4;
+    let current = countdownBeats;
+  
+    if (!playerState.playing) {
+      setCountdown(current);
+      playBeep();
+  
+      const tick = () => {
+        current -= 1;
+        if (current > 0) {
+          setCountdown(current);
+          playBeep();
+          countdownTimeout.current = setTimeout(tick, interval);
+        } else {
+          setCountdown(0);
+          // Wait one more beat before starting the song
+          countdownTimeout.current = setTimeout(() => {
+            player.toggle();
+          }, interval);
+        }
+      };
+  
+      countdownTimeout.current = setTimeout(tick, interval);
+    } else {
+      player.toggle();
+    }
+  }
+
+  const handlePlayWithCountdownOld = () => {
+    if (!playerState.playing) {
+      setCountdown(3)
+      let current = 3
+      playBeep()
+      const tick = () => {
+        playBeep()
+        current -= 1
+        if (current > 0) {
+          setCountdown(current)
+          countdownTimeout.current = setTimeout(tick, 1000)
+        } else {
+          setCountdown(0)
+          player.toggle() // Start the song after countdown
+        }
+      }
+      countdownTimeout.current = setTimeout(tick, 1000)
+    } else {
+      player.toggle()
+    }
+  }
+
   return (
     <>
       <div
@@ -138,11 +221,12 @@ function PlaySongLegacy() {
       >
         {!isRecording && (
           <>
+            <CountdownOverlay count={countdown} />
             <TopBar
               title={songMeta?.title}
               isLoading={!playerState.canPlay}
               isPlaying={playerState.playing}
-              onTogglePlaying={() => player.toggle()}
+              onTogglePlaying={handlePlayWithCountdown}
               onClickRestart={() => player.stop()}
               onClickBack={() => {
                 player.stop()
@@ -195,6 +279,7 @@ function PlaySongLegacy() {
             enableTouchscroll={songConfig.visualization !== 'falling-notes'}
           />
         </div>
+        {!isRecording && <FloatBar />}
       </div>
     </>
   )

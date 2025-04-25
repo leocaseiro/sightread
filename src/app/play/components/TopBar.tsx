@@ -5,6 +5,7 @@ import { isMobile } from '@/utils'
 import clsx from 'clsx'
 import React, { MouseEvent, PropsWithChildren } from 'react'
 import StatusIcon from './StatusIcon'
+import ScoreDisplay from './ScoreDisplay'
 
 type TopBarProps = {
   isLoading: boolean
@@ -34,6 +35,7 @@ export default function TopBar({
       <ButtonWithTooltip tooltip="Back" className="absolute! top-1/2 left-3 -translate-y-1/2">
         <ArrowLeft size={24} onClick={onClickBack} />
       </ButtonWithTooltip>
+      <ScoreDisplay />
       <div
         className={clsx(
           'flex h-full items-center gap-8',
