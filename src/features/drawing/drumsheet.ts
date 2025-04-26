@@ -12,7 +12,9 @@ export const drumMap: DrumNoteMapping[] = [
     { midi: 40, name: 'Electric Snare', acronym: 'SN', staffLine: 2, notehead: 'normal' },
     { midi: 37, name: 'Side Stick', acronym: 'SN', staffLine: 2, notehead: 'cross' },
     { midi: 42, name: 'Closed Hi-Hat', acronym: 'HH', staffLine: 6, notehead: 'cross' },
+    { midi: 22, name: 'Closed Hi-Hat Edge', acronym: 'HHE', staffLine: 6, notehead: 'cross' },
     { midi: 46, name: 'Open Hi-Hat', acronym: 'OH', staffLine: 6, notehead: 'circle-cross' },
+    { midi: 26, name: 'Open Hi-Hat Edge', acronym: 'OHE', staffLine: 6, notehead: 'circle-cross' },
     { midi: 44, name: 'Pedal Hi-Hat', acronym: 'PH', staffLine: -4, notehead: 'cross' },
     { midi: 36, name: 'Bass Drum 1', acronym: 'BD', staffLine: -2, notehead: 'normal' },
     { midi: 35, name: 'Acoustic Bass Drum', acronym: 'BD', staffLine: -3, notehead: 'normal' },
@@ -28,11 +30,11 @@ export const drumMap: DrumNoteMapping[] = [
     { midi: 48, name: 'High Tom', acronym: 'T1', staffLine: 3, notehead: 'normal' },
     
     { midi: 47, name: 'Mid Tom', acronym: 'T2', staffLine: 1, notehead: 'normal' },
-
     { midi: 45, name: 'Low Tom', acronym: 'T2', staffLine: 0, notehead: 'normal' },
-    { midi: 41, name: 'Low Floor Tom', acronym: 'T3', staffLine: 0, notehead: 'normal' },
-    
+
     { midi: 43, name: 'Very Low Tom', acronym: 'T3', staffLine: -1, notehead: 'normal' },
+    
+    { midi: 41, name: 'Low Floor Tom', acronym: 'T4', staffLine: 0, notehead: 'normal' },
 
     // { midi: 60, name: 'Hi Bongo', acronym: 'BO', staffLine: 4, notehead: 'normal' },
     // { midi: 61, name: 'Low Bongo', acronym: 'BO', staffLine: 4, notehead: 'normal' },
@@ -61,10 +63,10 @@ export const drumMap: DrumNoteMapping[] = [
     // { midi: 81, name: 'Open Triangle', acronym: 'OT', staffLine: 4, notehead: 'normal' },
 ];
 
-export const getDrumProp = (midiNote: number, prop: 'midi' | 'name' | 'acronym' | 'staffLine' | 'notehead' | 'extraLine'): DrumNoteMapping['midi'] | DrumNoteMapping['name'] | DrumNoteMapping['acronym'] | DrumNoteMapping['staffLine'] | DrumNoteMapping['notehead'] | DrumNoteMapping['extraLine'] => {
+export const getDrumProp = <T>(midiNote: number, prop: 'midi' | 'name' | 'acronym' | 'staffLine' | 'notehead' | 'extraLine'): T => {
   const mapping = drumMap.find(d => d.midi === midiNote)
-  if (!mapping) return '';
-  return mapping[prop];
+  if (!mapping) return '' as T;
+  return mapping[prop] as T;
 }
 
 const STEP_NUM: any = {
@@ -152,25 +154,25 @@ export function drawDrumStaffLines(
 //   }
 // }
 
-function drawDrumNote(ctx: CanvasRenderingContext2D, note: Note) {
-  const staffTop = 40;
-  const staffSpacing = 10;
-  const staffLines = 5;
-  const noteSpacing = 40;
+// function drawDrumNote(ctx: CanvasRenderingContext2D, note: Note) {
+//   const staffTop = 40;
+//   const staffSpacing = 10;
+//   const staffLines = 5;
+//   const noteSpacing = 40;
 
-  // Find mapping for this note's MIDI
-  const mapping = drumMap.find(d => d.midi === note.midi);
-  if (!mapping) return; // Skip unmapped notes
+//   // Find mapping for this note's MIDI
+//   const mapping = drumMap.find(d => d.midi === note.midi);
+//   if (!mapping) return; // Skip unmapped notes
 
-  // Calculate vertical position
-  const y = staffTop + (staffLines - mapping.staffLine) * staffSpacing / 2;
+//   // Calculate vertical position
+//   const y = staffTop + (staffLines - mapping.staffLine) * staffSpacing / 2;
 
-  // Calculate horizontal position
-  const x = 60 * noteSpacing;
+//   // Calculate horizontal position
+//   const x = 60 * noteSpacing;
 
-  // Draw notehead
-  drawDrumNotehead(ctx, x, y, mapping.notehead);
-}
+//   // Draw notehead
+//   drawDrumNotehead(ctx, x, y, mapping.notehead);
+// }
 
 function drawDrumNotehead(ctx: CanvasRenderingContext2D, x: number, y: number, type: 'normal' | 'cross' | 'diamond') {
   ctx.save();

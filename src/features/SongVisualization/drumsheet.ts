@@ -130,15 +130,24 @@ const colorMap = {
   black: '0,0,0',
 }
 
-const coloredNotesMap: { [step: string]: string } = {
-  A: '12,23,141',
-  B: '75,32,139',
-  C: '217,59,38',
-  D: '238,151,56',
-  E: '253,229,65',
-  F: '62,139,38',
-  G: '139,210,250',
-}
+const coloredNotesMapAcronym: { [acronym: string]: string } = {
+  HH:  '168, 101, 35',
+  HHE: '168, 101, 35',
+  OH:  '255, 155, 23',
+  OHE: '255, 155, 23',
+  PH:  '168, 101, 35',
+  RD:  '246, 220, 67',
+  RDB: '250, 213, 154',
+  SP:  '255,215,0',
+  CR:  '255,255,0',
+  CH:  '213, 199, 163',
+  SN:  '181, 252, 205',
+  T1:  '0,255,255',
+  T2:  '27, 86, 253',
+  T3:  '156, 39, 176',
+  T4: '255,20,147',
+  BD:  '255,0,255',
+};
 
 function getGameColorPrefix(state: State, note: SongNote, canvasX: number) {
   const playNotesLineX = getPlayNotesLineX(state)
@@ -168,7 +177,7 @@ function getLearnSongColorPrefix(
     return colorMap.primary
   }
 
-  return getNoteColor(coloredNotes, step)
+  return getNoteColorAcronym(coloredNotes, getDrumProp<string>(note.midiNote, 'acronym'))
 }
 
 function renderDrumSheetNote(state: State, note: SongNote): void {
@@ -211,8 +220,7 @@ function renderDrumSheetNote(state: State, note: SongNote): void {
   if (state.drawNotes) {
     ctx.font = `9px ${TEXT_FONT}`
     ctx.fillStyle = 'white'
-    // ctx.fillText(String(getDrumProp(note.midiNote, 'acronym')), canvasX - 3, canvasY + 3)
-    ctx.fillText(String(getDrumProp(note.midiNote, 'midi')), canvasX - 3, canvasY + 3)
+    ctx.fillText(String(getDrumProp<string>(note.midiNote, 'acronym')), canvasX - 3, canvasY + 3)
   }
   ctx.restore()
 }
@@ -236,13 +244,13 @@ function renderDrumMidiPressedKeys(state: State, inRange: (SongNote | SongMeasur
       ctx,
       canvasX,
       canvasY,
-      state.coloredNotes ? `rgba(${getNoteColor(true, key[0])},1)` : 'red',
+      state.coloredNotes ? `rgba(${getNoteColorAcronym(true, getDrumProp<string>(note, 'acronym'))},1)` : 'red',
     )
 
     if (state.drawNotes) {
       ctx.font = `9px ${TEXT_FONT}`
       ctx.fillStyle = 'white'
-      ctx.fillText(String(getDrumProp(note, 'acronym')), canvasX - 3, canvasY + 3)
+      ctx.fillText(String(getDrumProp<string>(note, 'acronym')), canvasX - 3, canvasY + 3)
     }
   }
 }
@@ -254,6 +262,6 @@ function fadeColorToWhite(color: string, gradient: any) {
   gradient.addColorStop(1, `rgba(${color},1)`)
 }
 
-function getNoteColor(coloredNotes: boolean, step: string): string {
-  return coloredNotes ? coloredNotesMap[step] : colorMap.black
+function getNoteColorAcronym(coloredNotes: boolean, acronym: string): string {
+  return coloredNotes ? coloredNotesMapAcronym[acronym] || colorMap.black : colorMap.black
 }
