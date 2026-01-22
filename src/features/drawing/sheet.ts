@@ -1,5 +1,6 @@
 import { getKey, getKeyDetails, getNote, getOctave, glyphs, KEY_SIGNATURE } from '@/features/theory'
 import { Clef } from '@/types'
+import type { NoteShape } from '@/features/customization/types'
 import { line } from './index'
 
 const MUSIC_FONT = 'Leland'
@@ -47,11 +48,15 @@ export function drawStaffLines(
   x: number,
   y: number,
   width: number,
+  visibleLines?: [number, number],
 ): void {
   ctx.save()
   ctx.lineWidth = STAFF_LINE_WIDTH
-  for (let i = 0; i < 5; i++, y += PIXELS_PER_ROW * 2) {
-    line(ctx, x, y, width, y)
+  const start = Math.max(1, visibleLines?.[0] ?? 1)
+  const end = Math.min(5, visibleLines?.[1] ?? 5)
+  let currentY = y + (start - 1) * PIXELS_PER_ROW * 2
+  for (let i = start; i <= end; i++, currentY += PIXELS_PER_ROW * 2) {
+    line(ctx, x, currentY, width, currentY)
   }
   ctx.restore()
 }
@@ -165,10 +170,53 @@ export function drawMusicNote(
   x: number,
   y: number,
   color: string | CanvasGradient,
+  shape: NoteShape = 'notehead',
 ) {
   ctx.save()
-  ctx.font = `${STAFF_FIVE_LINES_HEIGHT}px ${MUSIC_FONT}`
-  drawSymbol(ctx, glyphs.noteheadBlack, x - STAFF_SPACE / 2, y, STAFF_FIVE_LINES_HEIGHT, color)
+  ctx.fillStyle = color as any
+  ctx.strokeStyle = color as any
+  switch (shape) {
+    case 'notehead': {
+      ctx.font = `${STAFF_FIVE_LINES_HEIGHT}px ${MUSIC_FONT}`
+      drawSymbol(ctx, glyphs.noteheadBlack, x - STAFF_SPACE / 2, y, STAFF_FIVE_LINES_HEIGHT, color)
+      break
+    }
+    case 'cross': {
+      const r = STAFF_SPACE * 0.4
+      ctx.lineWidth = 10
+      ctx.lineCap = 'round'
+      ctx.beginPath()
+      ctx.moveTo(x - r, y - r)
+      ctx.lineTo(x + r, y + r)
+      ctx.moveTo(x - r, y + r)
+      ctx.lineTo(x + r, y - r)
+      ctx.stroke()
+      break
+    }
+    case 'diamond': {
+      const rw = STAFF_SPACE * 0.8
+      const rh = STAFF_SPACE * 0.6
+      ctx.beginPath()
+      ctx.moveTo(x, y - rh)
+      ctx.lineTo(x + rw, y)
+      ctx.lineTo(x, y + rh)
+      ctx.lineTo(x - rw, y)
+      ctx.closePath()
+      ctx.fill()
+      break
+    }
+    case 'triangle': {
+      const w = STAFF_SPACE * 1.2
+      const h = STAFF_SPACE * 1.0
+      ctx.beginPath()
+      ctx.moveTo(x, y - h / 2)
+      ctx.lineTo(x + w / 2, y + h / 2)
+      ctx.lineTo(x - w / 2, y + h / 2)
+      ctx.closePath()
+      ctx.fill()
+      break
+    }
+  }
   ctx.restore()
 }
 

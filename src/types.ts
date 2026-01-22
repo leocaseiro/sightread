@@ -1,4 +1,5 @@
 import { InstrumentName } from '@/features/synth'
+import type { NoteCustomization } from '@/features/customization/types'
 import { KEY_SIGNATURE, NOTE_LABELS } from './features/theory'
 
 export type DifficultyLabel =
@@ -108,6 +109,40 @@ export type SongConfig = {
   coloredNotes: boolean
   skipMissedNotes: boolean
   keySignature?: KEY_SIGNATURE
+  /**
+   * Per-MIDI note customization (overrides built-in preset if present).
+   */
+  noteCustomizations?: Record<number, NoteCustomization>
+  /**
+   * Which built-in (or user) preset to use. 'none' disables preset application.
+   */
+  customizationPreset?: string
+  /**
+   * When true, sheet hero uses NoteCustomization.order to compute Y placement relative to staff top.
+   */
+  noteCustomizationUseRowOffset?: boolean
+  /**
+   * Sheet staff visibility: 'grand' (both), 'treble' (only G-clef staff), or 'bass' (only F-clef staff).
+   */
+  sheetStaffs?: 'grand' | 'treble' | 'bass'
+  /**
+   * Optional visible line ranges (1..5 inclusive) per staff. If omitted, draws all 5 lines.
+   * Example: { treble: [1,2] } // show only top two lines on treble staff
+   */
+  sheetVisibleLines?: {
+    treble?: [number, number]
+    bass?: [number, number]
+  }
+  /**
+   * Control rendering of accidentals next to notes on the staff.
+   * Default: true
+   */
+  sheetShowNoteAccidentals?: boolean
+  /**
+   * Control rendering of the key signature symbols (sharps/flats) at the start.
+   * Default: true
+   */
+  sheetShowKeySignature?: boolean
   tracks: {
     [trackId: number]: TrackSetting
   }

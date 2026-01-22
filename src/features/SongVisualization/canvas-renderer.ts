@@ -1,4 +1,5 @@
 import { KEY_SIGNATURE, NOTE_LABELS } from '@/features/theory'
+import type { NoteCustomization } from '@/features/customization/types'
 import { Hand, HandSettings } from '@/types'
 import { Player } from '../player'
 import { renderFallingVis } from './falling-notes'
@@ -27,6 +28,17 @@ export type GivenState = {
   selectedRange?: { start: number; end: number }
   game: boolean
   player: Player
+  // Customizations
+  effectiveNoteCustomizations?: Record<number, NoteCustomization>
+  noteCustomizationUseRowOffset?: boolean
+  // Sheet layout options
+  sheetStaffs?: 'grand' | 'treble' | 'bass'
+  sheetVisibleLines?: {
+    treble?: [number, number]
+    bass?: [number, number]
+  }
+  sheetShowNoteAccidentals?: boolean
+  sheetShowKeySignature?: boolean
 }
 
 export function render(state: Readonly<GivenState>) {
