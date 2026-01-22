@@ -436,20 +436,24 @@ function renderMidiPressedKeys(state: State, inRange: (SongNote | SongMeasure)[]
     }
 
     const staffTopY = staff === 'bass' ? getBassStaffTopY(state) : getTrebleStaffTopY(state)
-    const canvasY = getNoteY(note, staff, staffTopY, state.keySignature)
+    const transposed = transposeMidi(note, state.transpose)
+    let canvasY = getNoteY(transposed, staff, staffTopY, state.keySignature)
     let canvasX = getPlayNotesLineX(state) - 2
-    const key = getKey(note, state.keySignature)
-    drawMusicNote(
-      ctx,
-      canvasX,
-      canvasY,
-      state.coloredNotes ? `rgba(${getNoteColor(true, key[0])},1)` : 'red',
-      'notehead',
-    )
+    const custom = state.effectiveNoteCustomizations?.[transposed]
+    if (state.noteCustomizationUseRowOffset && custom?.order != null) {
+      canvasY = staffTopY + custom.order * (STAFF_SPACE / 2)
+    }
+    const key = getKey(transposed, state.keySignature)
+    const headColor =
+      custom?.color ?? (state.coloredNotes ? `rgba(${getNoteColor(true, key[0])},1)` : 'red')
+    drawMusicNote(ctx, canvasX, canvasY, headColor, custom?.shape ?? 'notehead')
 
     // Draw accidental (sharp or flat)
     if (key.length === 2 && state.sheetShowNoteAccidentals !== false) {
-      const symbolColor = state.coloredNotes ? `rgba(${getNoteColor(true, key[0])},1)` : 'black'
+      const symbolColor =
+        state.coloredNotes && !custom?.color
+          ? `rgba(${getNoteColor(true, key[0])},1)`
+          : (custom?.color as string) ?? 'black'
       const accidental = key[1] === '#' ? glyphs.accidentalSharp : glyphs.accidentalFlat
       drawSymbol(ctx, accidental, canvasX - 24, canvasY, STAFF_FIVE_LINES_HEIGHT * 0.6, symbolColor)
     }
