@@ -52,8 +52,17 @@ const TRANSPOSE_OPTIONS = Array.from({ length: 25 }, (_, index) => index - 12).m
 const miniPlayer = new Player(getDefaultStore())
 
 export default function SettingsPanel(props: SidebarProps) {
-  const { left, right, visualization, waiting, noteLabels, coloredNotes, keySignature, transpose } =
-    props.config
+  const {
+    left,
+    right,
+    visualization,
+    waiting,
+    noteLabels,
+    coloredNotes,
+    keySignature,
+    transpose,
+    customizationPreset,
+  } = props.config
   const { onClose, onLoopToggled, isLooping } = props
   const player = usePlayer()
   const bpmModifier = useAtomValue(player.getBpmModifier())
@@ -147,6 +156,10 @@ export default function SettingsPanel(props: SidebarProps) {
       return
     }
     handleKeySignature(key as KEY_SIGNATURE)
+  }
+
+  const handlePresetSelection = (key: string) => {
+    props.onChange({ ...props.config, customizationPreset: key })
   }
 
   const toggleMetronome = (next: boolean) => {
@@ -451,6 +464,21 @@ export default function SettingsPanel(props: SidebarProps) {
                   items={[
                     { id: 'unknown', name: 'Unknown' },
                     ...getKeySignatures().map((keySig) => ({ id: keySig, name: keySig })),
+                  ]}
+                >
+                  {(item) => <SelectItem>{item.name}</SelectItem>}
+                </Select>
+              </SettingRow>
+              <SettingRow title="Preset" subtitle="Customize the sheet hero">
+                <Select
+                  aria-label="Preset"
+                  className="w-16"
+                  size="sm"
+                  selectedKey={customizationPreset}
+                  onSelectionChange={(key) => handlePresetSelection(key as string)}
+                  items={[
+                    { id: 'default', name: 'Piano' },
+                    { id: 'drums', name: 'Drums' },
                   ]}
                 >
                   {(item) => <SelectItem>{item.name}</SelectItem>}

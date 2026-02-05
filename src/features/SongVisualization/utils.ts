@@ -84,7 +84,7 @@ export function getDefaultSongSettings(song?: Song): SongConfig {
     coloredNotes: false,
     skipMissedNotes: false,
     visualization: 'falling-notes',
-    customizationPreset: 'drums',
+    customizationPreset: 'default',
     noteCustomizations: {},
     noteCustomizationUseRowOffset: true,
     sheetStaffs: 'grand',
@@ -119,11 +119,17 @@ export function getSongSettings(file: string, song: Song): SongConfig {
       ...defaults,
       ...persisted,
       customizationPreset: persisted.customizationPreset ?? defaults.customizationPreset,
-      noteCustomizations: { ...(persisted.noteCustomizations ?? {}), ...(defaults.noteCustomizations ?? {}) },
+      noteCustomizations: {
+        ...(persisted.noteCustomizations ?? {}),
+        ...(defaults.noteCustomizations ?? {}),
+      },
       noteCustomizationUseRowOffset:
         persisted.noteCustomizationUseRowOffset ?? defaults.noteCustomizationUseRowOffset,
       sheetStaffs: persisted.sheetStaffs ?? defaults.sheetStaffs,
-      sheetVisibleLines: { ...(defaults.sheetVisibleLines ?? {}), ...(persisted.sheetVisibleLines ?? {}) },
+      sheetVisibleLines: {
+        ...(defaults.sheetVisibleLines ?? {}),
+        ...(persisted.sheetVisibleLines ?? {}),
+      },
       countdownSeconds: persisted.countdownSeconds ?? defaults.countdownSeconds,
       loop: {
         ...defaults.loop,
