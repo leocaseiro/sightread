@@ -105,7 +105,13 @@ function drawStaticsOverlay(state: State) {
   const trebleTopY = getTrebleStaffTopY(state)
   const bassTopY = getBassStaffTopY(state)
   if (isTrebleVisible(state)) {
-    drawStaffLines(state.ctx, STAFF_START_X, trebleTopY, overlayEnd, state.sheetVisibleLines?.treble)
+    drawStaffLines(
+      state.ctx,
+      STAFF_START_X,
+      trebleTopY,
+      overlayEnd,
+      state.sheetVisibleLines?.treble,
+    )
   }
   if (isBassVisible(state)) {
     drawStaffLines(state.ctx, STAFF_START_X, bassTopY, overlayEnd, state.sheetVisibleLines?.bass)
@@ -154,10 +160,22 @@ function drawStaticsUnderlay(state: State) {
   const trebleTopY = getTrebleStaffTopY(state)
   const bassTopY = getBassStaffTopY(state)
   if (isTrebleVisible(state)) {
-    drawStaffLines(state.ctx, STAFF_START_X, trebleTopY, state.windowWidth, state.sheetVisibleLines?.treble)
+    drawStaffLines(
+      state.ctx,
+      STAFF_START_X,
+      trebleTopY,
+      state.windowWidth,
+      state.sheetVisibleLines?.treble,
+    )
   }
   if (isBassVisible(state)) {
-    drawStaffLines(state.ctx, STAFF_START_X, bassTopY, state.windowWidth, state.sheetVisibleLines?.bass)
+    drawStaffLines(
+      state.ctx,
+      STAFF_START_X,
+      bassTopY,
+      state.windowWidth,
+      state.sheetVisibleLines?.bass,
+    )
   }
 }
 
@@ -331,7 +349,10 @@ function renderSheetNote(state: State, note: SongNote): void {
     0,
   )
   fadeColorToWhite(prefix, noteGradient)
-  const headColor: string | CanvasGradient = custom?.color ?? noteGradient
+  // only set color if coloredNotes is enabled
+  const headColor: string | CanvasGradient = state.coloredNotes
+    ? (custom?.color ?? noteGradient)
+    : noteGradient
 
   ctx.fillStyle = headColor as any
   ctx.strokeStyle = headColor as any
@@ -358,7 +379,7 @@ function renderSheetNote(state: State, note: SongNote): void {
     drawSymbol(ctx, symbol, symbolX, canvasY, STAFF_FIVE_LINES_HEIGHT * 0.8, headColor)
   }
   const customLabel = custom?.label
-  if (customLabel) {
+  if (state.noteLabels === 'preset' && customLabel) {
     // Center 1–3 character labels over the note head
     ctx.font = `10px ${TEXT_FONT}`
     ctx.fillStyle = 'white'
@@ -453,7 +474,7 @@ function renderMidiPressedKeys(state: State, inRange: (SongNote | SongMeasure)[]
       const symbolColor =
         state.coloredNotes && !custom?.color
           ? `rgba(${getNoteColor(true, key[0])},1)`
-          : (custom?.color as string) ?? 'black'
+          : ((custom?.color as string) ?? 'black')
       const accidental = key[1] === '#' ? glyphs.accidentalSharp : glyphs.accidentalFlat
       drawSymbol(ctx, accidental, canvasX - 24, canvasY, STAFF_FIVE_LINES_HEIGHT * 0.6, symbolColor)
     }

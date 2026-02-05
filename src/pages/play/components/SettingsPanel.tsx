@@ -469,6 +469,7 @@ export default function SettingsPanel(props: SidebarProps) {
                 { id: 'none', name: 'None' },
                 { id: 'alphabetical', name: 'Alphabetical' },
                 { id: 'fixed-do', name: 'Fixed Do' },
+                { id: 'preset', name: 'Preset' },
               ]}
             >
               {(item) => <SelectItem>{item.name}</SelectItem>}
