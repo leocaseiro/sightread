@@ -469,23 +469,24 @@ export default function SettingsPanel(props: SidebarProps) {
                   {(item) => <SelectItem>{item.name}</SelectItem>}
                 </Select>
               </SettingRow>
-              <SettingRow title="Preset" subtitle="Customize the sheet hero">
-                <Select
-                  aria-label="Preset"
-                  className="w-16"
-                  size="sm"
-                  selectedKey={customizationPreset}
-                  onSelectionChange={(key) => handlePresetSelection(key as string)}
-                  items={[
-                    { id: 'default', name: 'Piano' },
-                    { id: 'drums', name: 'Drums' },
-                  ]}
-                >
-                  {(item) => <SelectItem>{item.name}</SelectItem>}
-                </Select>
-              </SettingRow>
             </div>
           )}
+
+          <SettingRow title="Preset" subtitle="Customize the sheet hero">
+            <Select
+              aria-label="Preset"
+              className="w-16"
+              size="sm"
+              selectedKey={customizationPreset}
+              onSelectionChange={(key) => handlePresetSelection(key as string)}
+              items={[
+                { id: 'default', name: 'Piano' },
+                { id: 'drums', name: 'Drums' },
+              ]}
+            >
+              {(item) => <SelectItem>{item.name}</SelectItem>}
+            </Select>
+          </SettingRow>
           <SettingRow icon={<Type className="h-4 w-4" />} title="Note labels">
             <Select
               aria-label="Note labels"

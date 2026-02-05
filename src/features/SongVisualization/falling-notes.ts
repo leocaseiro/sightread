@@ -251,7 +251,13 @@ export function renderFallingNote(note: SongNote, state: State): void {
   const posY = getItemStartEnd(note, state).end - (state.height - state.noteHitY)
   const posX = Math.floor(lane.left + 1)
   const width = lane.width - 2
-  const color = getNoteColor(state, note)
+  
+  // Apply per-note customization
+  const custom = state.effectiveNoteCustomizations?.[transposed]
+  const defaultColor = getNoteColor(state, note)
+  // Use custom color if coloredNotes is enabled and custom color exists
+  const color = state.coloredNotes && custom?.color ? custom.color : defaultColor
+  
   const actualLength = note.duration * pps
   // TODO: the renderingt height is wonky since it relies on browser canvas-only things.
   const minLengthToDisplayLetter = getFontSize(ctx, '', (width * 2) / 3).height + 15
@@ -262,7 +268,23 @@ export function renderFallingNote(note: SongNote, state: State): void {
   ctx.strokeStyle = 'rgb(40,40,40)'
   roundRect(ctx, posX, posY, width, length)
 
-  if (noteLabels !== 'none') {
+  const customLabel = custom?.label
+
+  if (noteLabels === 'preset' && customLabel) {
+    ctx.fillStyle = 'white'
+    ctx.strokeStyle = 'black'
+    ctx.textBaseline = 'bottom'
+    const padding = 1
+    const maxWidth = width - padding * 2
+    const { fontPx, measuredWidth: textWidth } = getOptimalFontSize(
+      ctx,
+      customLabel,
+      TEXT_FONT,
+      maxWidth,
+    )
+    ctx.font = `${fontPx}px ${TEXT_FONT}`
+    ctx.fillText(customLabel, posX + width / 2 - textWidth / 2, posY + length - 4)
+  } else if (noteLabels !== 'none') {
     ctx.fillStyle = 'white'
     ctx.strokeStyle = 'black'
     ctx.textBaseline = 'bottom'
