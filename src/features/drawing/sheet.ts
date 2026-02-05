@@ -1,6 +1,6 @@
+import type { NoteShape } from '@/features/customization/types'
 import { getKey, getKeyDetails, getNote, getOctave, glyphs, KEY_SIGNATURE } from '@/features/theory'
 import { Clef } from '@/types'
-import type { NoteShape } from '@/features/customization/types'
 import { line } from './index'
 
 const MUSIC_FONT = 'Leland'
@@ -22,6 +22,10 @@ const STEP_NUM: any = {
 
 const CLEFS = {
   treble: {
+    bottomRow: getRow(getNote('E4')),
+    topRow: getRow(getNote('F5')),
+  },
+  percussion: {
     bottomRow: getRow(getNote('E4')),
     topRow: getRow(getNote('F5')),
   },
@@ -277,4 +281,9 @@ export function drawFClef(ctx: CanvasRenderingContext2D, x: number, staffTopY: n
 
 export function drawCurlyBrace(ctx: CanvasRenderingContext2D, x: number, y: number, size?: number) {
   drawSymbol(ctx, glyphs.brace, x, y, size)
+}
+
+export function drawPercussionClef(ctx: CanvasRenderingContext2D, x: number, staffTopY: number) {
+  const y = staffTopY + getOffset(getNote('B4'), 'percussion')
+  drawSymbol(ctx, glyphs.unpitchedPercussionClef1, x, y, STAFF_FIVE_LINES_HEIGHT)
 }

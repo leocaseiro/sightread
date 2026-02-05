@@ -21,5 +21,6 @@ export type NoteCustomization = {
 export type NoteCustomizationPreset = {
   id: string
   name: string
+  clef?: 'treble' | 'bass' | 'percussion'
   notes: Record<number, NoteCustomization>
 }

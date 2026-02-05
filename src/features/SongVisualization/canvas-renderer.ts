@@ -29,6 +29,8 @@ export type GivenState = {
   game: boolean
   player: Player
   // Customizations
+  customizationPreset?: string
+  customizationPresetClef?: 'treble' | 'bass' | 'percussion'
   effectiveNoteCustomizations?: Record<number, NoteCustomization>
   noteCustomizationUseRowOffset?: boolean
   // Sheet layout options

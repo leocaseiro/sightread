@@ -3,6 +3,7 @@ import {
   drawFClef,
   drawGClef,
   drawKeySignature,
+  drawPercussionClef,
   drawPlayNotesLine,
   drawStaffConnectingLine,
   drawStaffLines,
@@ -127,17 +128,21 @@ function drawStaticsOverlay(state: State) {
   drawPlayNotesLine(ctx, getPlayNotesLineX(state) - 2, playLineTop, playLineBottom)
 
   if (isTrebleVisible(state)) {
-    drawGClef(ctx, getClefX(), trebleTopY)
+    if (state.customizationPresetClef === 'percussion') {
+      drawPercussionClef(ctx, getClefX(), trebleTopY)
+    } else {
+      drawGClef(ctx, getClefX(), trebleTopY)
+    }
   }
   if (isBassVisible(state)) {
     drawFClef(ctx, getClefX(), bassTopY)
   }
   if (displayKeySignature) {
     if (isTrebleVisible(state)) {
-      drawKeySignature(ctx, getKeySignatureX(), trebleTopY, displayKeySignature, 'treble')
+      drawKeySignature(ctx, getKeySignatureX(state), trebleTopY, displayKeySignature, 'treble')
     }
     if (isBassVisible(state)) {
-      drawKeySignature(ctx, getKeySignatureX(), bassTopY, displayKeySignature, 'bass')
+      drawKeySignature(ctx, getKeySignatureX(state), bassTopY, displayKeySignature, 'bass')
     }
   }
 
@@ -199,7 +204,11 @@ function getClefX() {
   return STAFF_START_X + STAFF_SPACE
 }
 
-function getKeySignatureX() {
+function getKeySignatureX(state?: State) {
+  // Reduce space after percussion clef since it's narrower than G clef
+  if (state?.customizationPresetClef === 'percussion') {
+    return getClefX() + 1.5 * STAFF_SPACE
+  }
   return getClefX() + 3 * STAFF_SPACE
 }
 
@@ -207,7 +216,7 @@ function getTimeSignatureX(state: State) {
   const fifths = state.displayKeySignature
     ? getKeyDetails(state.displayKeySignature).notes.length
     : 0
-  return getKeySignatureX() + fifths * STAFF_SPACE + STAFF_SPACE
+  return getKeySignatureX(state) + fifths * STAFF_SPACE + STAFF_SPACE
 }
 
 function getPlayNotesLineX(state: State) {

@@ -55,7 +55,8 @@ function CanvasRenderer({
 
   debugger;
   const presetId = config.customizationPreset ?? 'drums'
-  const presetNotes = presetId && builtInPresets[presetId]?.notes
+  const preset = presetId ? builtInPresets[presetId] : undefined
+  const presetNotes = preset?.notes
   const effectiveNoteCustomizations = useMemo(() => {
     const base = presetNotes ?? {}
     const overrides = config.noteCustomizations ?? {}
@@ -109,6 +110,8 @@ function CanvasRenderer({
       selectedRange,
       game,
       player,
+      customizationPreset: presetId,
+      customizationPresetClef: preset?.clef,
       effectiveNoteCustomizations,
       noteCustomizationUseRowOffset: !!config.noteCustomizationUseRowOffset,
     }

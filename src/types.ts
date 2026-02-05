@@ -1,5 +1,5 @@
-import { InstrumentName } from '@/features/synth'
 import type { NoteCustomization } from '@/features/customization/types'
+import { InstrumentName } from '@/features/synth'
 import { KEY_SIGNATURE, NOTE_LABELS } from './features/theory'
 
 export type DifficultyLabel =
@@ -85,7 +85,7 @@ export type Song = {
   ticksToSeconds: (seconds: number) => number
 }
 
-export type Clef = 'bass' | 'treble'
+export type Clef = 'bass' | 'treble' | 'percussion'
 export type VisualizationMode = 'falling-notes' | 'sheet'
 export type Hand = 'both' | 'left' | 'right' | 'none'
 export type SongConfig = {

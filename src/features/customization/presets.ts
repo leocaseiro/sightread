@@ -3,6 +3,7 @@ import { NoteCustomization, NoteCustomizationPreset } from './types'
 export const drumsPreset: NoteCustomizationPreset = {
   id: 'drums',
   name: 'Drums',
+  clef: 'percussion',
   notes: {
     // Attack Cymbals
     52: { enabled: true, label: 'Chi', shape: 'cross', color: '#d97706', order: -3 }, // China (darker amber)

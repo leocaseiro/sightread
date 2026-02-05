@@ -19,6 +19,7 @@ const glyphs = {
   timeSig9: '\uE089',
   timeSigCombNumerator: '\uE09E',
   timeSigCombDenominator: '\uE09F',
+  unpitchedPercussionClef1: '\uE069',
 
   noteheadBlack: '\uE0A4',
   noteEmptyBlack: '\uE1AF',
