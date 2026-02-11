@@ -36,6 +36,8 @@ const TEXT_FONT = 'Arial'
 const STAFF_START_X = 100
 const STAFF_FIVE_LINES_HEIGHT = 80
 const PLAY_NOTES_LINE_OFFSET = STAFF_SPACE // offset above and below the staff lines
+// How far past the cursor to extend staff lines and show played notes (in pixels)
+const VISIBLE_NOTES_AFTER_CURSOR_WIDTH = 400
 
 function getViewport(state: Readonly<GivenState>): Viewport {
   return {
@@ -77,7 +79,11 @@ export function renderSheetVis(givenState: GivenState): void {
 }
 
 function getSheetItemsInView(state: State): CanvasItem[] {
-  const startPred = (item: CanvasItem) => getItemStartEnd(state, item).end >= 0
+  // Allow notes to remain visible after passing the cursor
+  const playNotesLineX = getPlayNotesLineX(state)
+  const visibleAreaStart = -(playNotesLineX + VISIBLE_NOTES_AFTER_CURSOR_WIDTH)
+  
+  const startPred = (item: CanvasItem) => getItemStartEnd(state, item).end >= visibleAreaStart
   const endPred = (item: CanvasItem) => getItemStartEnd(state, item).start > state.windowWidth
   return getItemsInView(state, startPred, endPred)
 }
@@ -91,8 +97,10 @@ function isBassVisible(state: State) {
 
 function drawStaticsOverlay(state: State) {
   const { ctx, displayKeySignature } = state
-  const overlayEnd = getPlayNotesLineX(state) - STAFF_SPACE * 2
-  ctx.clearRect(0, 0, overlayEnd, state.height)
+
+  // Only clear the left sidebar area where static elements (clefs, signatures) are drawn
+  const staticElementsEnd = STAFF_START_X + 80
+  ctx.clearRect(0, 0, staticElementsEnd, state.height)
   ctx.fillStyle = 'black'
   ctx.strokeStyle = 'black'
 
@@ -105,17 +113,22 @@ function drawStaticsOverlay(state: State) {
   const staffHeight = STAFF_FIVE_LINES_HEIGHT
   const trebleTopY = getTrebleStaffTopY(state)
   const bassTopY = getBassStaffTopY(state)
+
+  // Extend staff lines beyond cursor to show notes that have passed
+  const playNotesLineX = getPlayNotesLineX(state)
+  const staffLinesEnd = playNotesLineX + VISIBLE_NOTES_AFTER_CURSOR_WIDTH
+
   if (isTrebleVisible(state)) {
     drawStaffLines(
       state.ctx,
       STAFF_START_X,
       trebleTopY,
-      overlayEnd,
+      staffLinesEnd,
       state.sheetVisibleLines?.treble,
     )
   }
   if (isBassVisible(state)) {
-    drawStaffLines(state.ctx, STAFF_START_X, bassTopY, overlayEnd, state.sheetVisibleLines?.bass)
+    drawStaffLines(state.ctx, STAFF_START_X, bassTopY, staffLinesEnd, state.sheetVisibleLines?.bass)
   }
   if (isTrebleVisible(state) && isBassVisible(state)) {
     drawStaffConnectingLine(state.ctx, STAFF_START_X, trebleTopY - 1, bassTopY + staffHeight + 1)

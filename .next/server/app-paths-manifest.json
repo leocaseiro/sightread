@@ -1,0 +1,8 @@
+{
+  "/manifest.json/route": "app/manifest.json/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/midi/route": "app/api/midi/route.js",
+  "/songs/page": "app/songs/page.js",
+  "/page": "app/page.js",
+  "/play/page": "app/play/page.js"
+}
